@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Classeur - Accueil</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="shortcut icon" href="./images/favicon.ico" type="image/x-icon">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.js"></script>
+</head>
+
+<body>
+  <header>
+    <h1>Pense-Bête Développeur</h1>
+    <p>
+      Utilisez cette page pour créer, gérer vos catégories et rechercher des
+      informations.
+    </p>
+  </header>
+
+  <!-- Barre de recherche -->
+  <section id="search-section">
+    <input type="text" id="search-input" placeholder="Rechercher..." />
+    <button id="search-button">Rechercher</button>
+  </section>
+
+  <!-- Boutons d'import/export -->
+  <div id="import-export-buttons">
+    <button id="export-button">Exporter les données</button>
+    <button id="agenda-button">Agenda</button>
+    <button id="import-button">Importer les données</button>
+    <input type="file" id="import-file-input" style="display: none;" accept=".json" />
+  </div>
+  </section>
+
+  <!-- Formulaire pour créer une nouvelle catégorie -->
+  <section id="add-category">
+    <h2>Créer une Nouvelle Catégorie</h2>
+    <form id="category-form">
+      <label for="new-category-name">Nom de la Catégorie :</label>
+      <input type="text" id="new-category-name" name="new-category-name" required />
+      <button type="submit">Ajouter la Catégorie</button>
+    </form>
+  </section>
+
+  <!-- Liste des catégories affichées sous forme de blocs -->
+  <section id="category-list">
+    <h2>Vos Catégories</h2>
+    <div id="category-menu" class="category-grid">
+      <!-- Les catégories seront générées dynamiquement ici -->
+    </div>
+  </section>
+
+  <!-- Résultats de la recherche -->
+  <section id="search-results" style="display: none">
+    <h2>Résultats de la Recherche</h2>
+    <div id="results-container">
+      <!-- Les résultats de recherche seront affichés ici -->
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

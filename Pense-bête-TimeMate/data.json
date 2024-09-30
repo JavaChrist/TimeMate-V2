@@ -1,0 +1,62 @@
+{
+  "html": [
+    {
+      "title": "Les balises de base",
+      "description": "Voici les balises HTML les plus courantes :",
+      "code": "<!DOCTYPE html>\n<html>\n<head>\n<title>Mon Titre</title>\n</head>\n<body>\n<h1>Hello World</h1>\n</body>\n</html>"
+    },
+    {
+      "title": "Les formulaires",
+      "description": "Comment créer un formulaire basique :",
+      "code": "<form>\n<label for='name'>Nom :</label>\n<input type='text' id='name'>\n<button type='submit'>Envoyer</button>\n</form>"
+    }
+  ],
+  "css": [
+    {
+      "title": "Flexbox",
+      "description": "Aligner les éléments avec Flexbox :",
+      "code": "display: flex;\njustify-content: center;\nalign-items: center;"
+    },
+    {
+      "title": "Grid Layout",
+      "description": "Créer une grille avec CSS Grid :",
+      "code": "display: grid;\ngrid-template-columns: repeat(3, 1fr);\ngap: 10px;"
+    }
+  ],
+  "javascript": [
+    {
+      "title": "Les fonctions",
+      "description": "Définir une fonction en JavaScript :",
+      "code": "function greet(name) {\n  return `Hello, ${name}!`;\n}\nconsole.log(greet('World'));"
+    },
+    {
+      "title": "Les Promesses",
+      "description": "Gérer les actions asynchrones avec les Promises :",
+      "code": "const fetchData = () => {\n  return new Promise((resolve, reject) => {\n    setTimeout(() => resolve('Données récupérées'), 2000);\n  });\n};\nfetchData().then(data => console.log(data));"
+    }
+  ],
+  "react": [
+    {
+      "title": "Les composants",
+      "description": "Créer un composant basique en React :",
+      "code": "function App() {\n  return <h1>Hello React</h1>;\n}\nexport default App;"
+    },
+    {
+      "title": "Les Hooks",
+      "description": "Utiliser le hook useState en React :",
+      "code": "import { useState } from 'react';\nfunction Counter() {\n  const [count, setCount] = useState(0);\n  return (\n    <div>\n      <p>Vous avez cliqué {count} fois</p>\n      <button onClick={() => setCount(count + 1)}>Cliquez ici</button>\n    </div>\n  );\n}"
+    }
+  ],
+  "github": [
+    {
+      "title": "Les commandes Git de base",
+      "description": "Les commandes essentielles pour démarrer avec Git :",
+      "code": "git init\n git add .\n git commit -m 'Initial commit'\n git push origin main"
+    },
+    {
+      "title": "Cloner un dépôt",
+      "description": "Cloner un dépôt distant :",
+      "code": "git clone https://github.com/ton-repo.git"
+    }
+  ]
+}

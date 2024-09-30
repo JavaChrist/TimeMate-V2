@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activités et Temps Réel - TimeMate</title>
+  <link rel="stylesheet" href="main.css">
+  <link rel="shortcut icon" href="favicon.ico?v=1" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+</head>
+
+<body>
+  <header>
+    <h1>Tableau des Activités</h1>
+  </header>
+
+  <!-- Bouton Réinitialiser -->
+  <div class="button-container">
+    <button class="reset-button" id="reset-button" aria-label="Réinitialiser le tableau">Réinitialiser le
+      tableau</button>
+
+    <button class="back-button" onclick="location.href='app.html'">Retour au calendrier</button>
+  </div>
+
+  <!-- Tableau des activités -->
+  <table id="activities-log">
+    <thead>
+      <tr>
+        <th style="width: 66.66%;">Nom de l'activité</th>
+        <th style="width: 11.11%;">Nombre d'heures prévues</th>
+        <th style="width: 11.11%;">Nombre d'heures réalisées</th>
+        <th style="width: 11.11%;">Temps restant</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Les activités seront ajoutées ici par JavaScript -->
+    </tbody>
+  </table>
+
+  <script src="activites.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>

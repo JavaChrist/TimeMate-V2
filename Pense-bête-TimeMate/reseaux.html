@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Réseaux sociaux</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="shortcut icon" href="./images/favicon.ico" type="image/x-icon">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.js"></script>
+</head>
+
+<body data-category-id="javascript">
+  <header>
+    <h1>Réseaux sociaux</h1>
+    <a href="index.html" class="back-button">← Retour à l'accueil</a>
+  </header>
+
+  <!-- Formulaire pour ajouter du contenu spécifique à la catégorie HTML -->
+  <section id="add-content">
+    <h2>Ajouter du Contenu</h2>
+    <form id="content-form">
+      <label for="title">Titre :</label>
+      <input type="text" id="title" name="title" required />
+
+      <label for="description">Description :</label>
+      <textarea id="description" name="description" rows="10" required></textarea>
+
+      <label for="code">Code (optionnel) :</label>
+      <textarea id="code" name="code" rows="10"></textarea>
+      <label for="resume">Résumé (optionnel) :</label>
+      <textarea id="resume" name="resume" rows="10"></textarea>
+
+      <button type="submit">Ajouter</button>
+    </form>
+  </section>
+
+  <!-- Contenu affiché -->
+  <main id="content">
+    <!-- Exemple de code avec coloration syntaxique -->
+    <pre><code class="language-js">
+        </code></pre>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
