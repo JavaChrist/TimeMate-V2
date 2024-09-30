@@ -39,7 +39,7 @@ let data = {
             id: "codes",
             name: "CODES",
             page: "codes.html",
-            logo: "/Pense-bete-TimeMate/images/favicon.ico",
+            logo: "favicon.ico",
             className: "codes"
         }
     ]

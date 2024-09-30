@@ -4,17 +4,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Travaux à réaliser</title>
+  <title>Futur projets</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="shortcut icon" href="./images/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.css" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.js"></script>
 </head>
 
-<body>
+<body data-category-id="css">
   <header>
-    <h1>Travaux à réaliser</h1>
-    <a href="index.html" class="back-button">← Retour à l'accueil</a>
+    <h1>Futur projets</h1>
+    <a href="/index.html" class="back-button">← Retour à l'accueil</a>
   </header>
 
   <div class="container-style-text">
@@ -49,10 +49,7 @@
       </button>
     </div>
   </div>
-
-  <body data-category-id="html"></body>
-
-  <!-- Formulaire pour ajouter du contenu spécifique à la catégorie HTML -->
+  <!-- Formulaire pour ajouter du contenu spécifique à la catégorie CSS -->
   <section id="add-content">
     <h2>Ajouter du Contenu</h2>
     <form id="content-form">
@@ -63,13 +60,14 @@
       <textarea id="description" name="description" rows="10" required></textarea>
 
       <label for="code">Code (optionnel) :</label>
-      <textarea id="code" name="code" rows="0"></textarea>
+      <textarea id="code" name="code" rows="10"></textarea>
       <label for="resume">Résumé (optionnel) :</label>
       <textarea id="resume" name="resume" rows="10"></textarea>
 
       <button type="submit">Ajouter</button>
     </form>
   </section>
+
   <!-- Contenu affiché -->
   <main id="content">
 
