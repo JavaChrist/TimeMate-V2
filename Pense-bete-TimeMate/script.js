@@ -4,42 +4,42 @@ let data = {
             id: "travaux",
             name: "TRAVAUX A REALISER",
             page: "travaux.html",
-            logo: "/Pense-bête-TimeMate/images/travaux.png",
+            logo: "/Pense-bete-TimeMate/images/travaux.png",
             className: "travaux"
         },
         {
             id: "projets",
             name: "FUTUR PROJETS",
             page: "projets.html",
-            logo: "/Pense-bête-TimeMate/images/projets.png",
+            logo: "/Pense-bete-TimeMate/images/projets.png",
             className: "projets"
         },
         {
             id: "reseaux",
             name: "RESEAUX SOCIAUX",
             page: "reseaux.html",
-            logo: "/Pense-bête-TimeMate/images/LinkedIn.png",
+            logo: "/Pense-bete-TimeMate/images/LinkedIn.png",
             className: "reseaux"
         },
         {
             id: "afaire",
             name: "A FAIRE",
             page: "afaire.html",
-            logo: "/Pense-bête-TimeMate/images/afaire.png",
+            logo: "/Pense-bete-TimeMate/images/afaire.png",
             className: "afaire"
         },
         {
             id: "divers",
             name: "DIVERS",
             page: "divers.html",
-            logo: "/Pense-bête-TimeMate/images/divers.png",
+            logo: "/Pense-bete-TimeMate/images/divers.png",
             className: "divers"
         },
         {
             id: "codes",
             name: "CODES",
             page: "codes.html",
-            logo: "/Pense-bête-TimeMate/images/favicon.ico",
+            logo: "/Pense-bete-TimeMate/images/favicon.ico",
             className: "codes"
         }
     ]
@@ -402,14 +402,4 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('agenda-button').addEventListener('click', function () {
         window.location.href = '../app.html';
     });
-});
-
-const logosContainer = document.getElementById('logos');
-
-data.categories.forEach(category => {
-    const img = document.createElement('img');
-    img.src = category.logo;
-    img.alt = category.name;
-    img.classList.add('logo');
-    logosContainer.appendChild(img);
 });

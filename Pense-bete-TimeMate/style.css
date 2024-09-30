@@ -175,6 +175,68 @@ header p {
   }
 }
 
+.container-style-text {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+padding: 20px;
+}
+
+.text-style-buttons button {
+  padding: 10px 20px;
+  cursor: pointer;
+  background: linear-gradient(145deg, #007bff, #0056b3);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  transition: transform 0.3s ease, box-shadow 0.3s ease,
+    background-color 0.3s ease;
+  box-shadow: 0 4px rgba(0, 74, 143, 0.8);
+}
+
+/* Effet 3D lors du clic */
+.text-style-buttons button:active,
+button:active,
+.delete-button:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px rgba(0, 74, 143, 0.8);
+}
+
+/* Couleurs personnalisées pour les boutons de style */
+.text-style-buttons button:nth-child(1) {
+  background: linear-gradient(145deg, #ff4757, #b33241);
+  box-shadow: 0 4px rgba(179, 50, 65, 0.8);
+}
+
+.text-style-buttons button:nth-child(2) {
+  background: linear-gradient(145deg, #ffa502, #b37600);
+  box-shadow: 0 4px rgba(179, 118, 0, 0.8);
+}
+
+.text-style-buttons button:nth-child(3) {
+  background: linear-gradient(145deg, #1e90ff, #1569b2);
+  box-shadow: 0 4px rgba(21, 105, 178, 0.8);
+}
+
+.text-style-buttons button:nth-child(4) {
+  background: linear-gradient(145deg, #2ed573, #1e9e50);
+  box-shadow: 0 4px rgba(30, 158, 80, 0.8);
+}
+
+.text-style-buttons button:nth-child(5) {
+  background: linear-gradient(145deg, #3742fa, #252dab);
+  box-shadow: 0 4px rgba(37, 45, 171, 0.8);
+}
+
+.text-style-buttons button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+
+
 /* Style pour les pages de catégories (ex: html.html) */
 
 #add-content {
