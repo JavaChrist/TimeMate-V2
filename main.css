@@ -18,7 +18,8 @@ h1 {
 }
 
 /* Boutons */
-button, a {
+button,
+a {
   padding: 8px 16px;
   border: none;
   background-color: #007bff;
@@ -131,10 +132,10 @@ header {
   margin-bottom: 5px;
   text-align: center;
   font-size: 18px;
-  color: #fff;
+  color: black;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: hidden; /* S'assurer que tout est visible */
-  word-wrap: break-word; /* Empêcher les débordements de texte */
+  word-wrap: break-word; /*Empêcher les débordements de texte */
 }
 
 .activity .activity-name {

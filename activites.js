@@ -4,6 +4,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const activities = JSON.parse(localStorage.getItem('activities')) || [];
     const activitiesLog = document.getElementById('activities-log');
 
+    if (!activitiesLog) {
+      console.error("Element 'activities-log' not found in the DOM.");
+      return;
+    }
+
     // Supprime toutes les lignes existantes sauf l'en-tête
     while (activitiesLog.rows.length > 1) {
       activitiesLog.deleteRow(1);
@@ -18,17 +23,19 @@ document.addEventListener('DOMContentLoaded', function () {
       const cell4 = row.insertCell(3);
 
       // Nom de l'activité
-      cell1.innerHTML = activity.activityName;
+      cell1.innerHTML = activity.activityName || "N/A";
+
+      // Vérifiez que totalHours et realizedHours sont définis
+      const totalHours = activity.totalHours || 0;
+      const realizedHours = activity.realizedHours || 0;
 
       // Heures prévues
-      const totalHours = parseFloat(activity.totalHours);
-      cell2.innerHTML = !isNaN(totalHours) && totalHours > 0 ? totalHours.toFixed(2) : '0.00';
+      cell2.innerHTML = totalHours.toFixed(2);
 
       // Heures réalisées (Initialisation à 0 pour l'exemple)
-      const realizedHours = parseFloat(activity.realizedHours) || 0; // Mettre à jour avec la logique appropriée pour les heures réalisées
       cell3.innerHTML = realizedHours.toFixed(2);
 
-      // Temps restant (différence entre heures prévues et réalisées)
+      // Calcul et affichage du temps restant
       const remainingHours = totalHours - realizedHours;
       cell4.innerHTML = remainingHours.toFixed(2);
     });
@@ -67,4 +74,23 @@ document.addEventListener('DOMContentLoaded', function () {
       updateActivitiesTable();
     }
   });
+
+  // Fonction pour supprimer une activité du stockage local
+  function removeActivityFromStorage(activityId, activityDate) {
+    let activities = JSON.parse(localStorage.getItem('activities')) || [];
+    activities.forEach(activity => {
+      if (activity.id === activityId) {
+        activity.activitiesDetails = activity.activitiesDetails.filter(detail => {
+          if (detail.date === activityDate) {
+            activity.totalHours -= parseFloat(detail.hours); // Soustraire les heures de l'activité supprimée
+            return false; // Ne pas inclure ce détail dans le nouveau tableau
+          }
+          return true;
+        });
+      }
+    });
+
+    localStorage.setItem('activities', JSON.stringify(activities));
+    updateActivitiesTable(); // Mettre à jour le tableau après la suppression
+  }
 });
