@@ -187,6 +187,63 @@ button[type="submit"]:hover {
   background-color: #0056b3;
 }
 
+/* Centrer le conteneur du timer */
+#timer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 50px auto;
+  padding: 20px;
+  background: linear-gradient(145deg, #b0b0b0, #d4d4d4); /* Argenté */
+  box-shadow: 10px 10px 20px #a0a0a0, -10px -10px 20px #e4e4e4; /* Ombres pour effet 3D */
+  border-radius: 15px;
+  width: 60%;
+  max-width: 500px;
+}
+
+/* Timer effet 3D argenté */
+#timer-display {
+  font-size: 3rem;
+  color: #333; /* Couleur du texte */
+  padding: 20px 40px;
+  background: linear-gradient(145deg, #d4d4d4, #b0b0b0); /* Couleur argentée */
+  box-shadow: inset 5px 5px 10px #a0a0a0, inset -5px -5px 10px #e4e4e4;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+/* Boutons stylisés 3D argentés */
+#timer-pause,
+#timer-reset {
+  font-size: 1.2rem;
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: linear-gradient(145deg, #d4d4d4, #b0b0b0); /* Boutons argentés */
+  box-shadow: 5px 5px 10px #a0a0a0, -5px -5px 10px #e4e4e4;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#timer-pause:hover,
+#timer-reset:hover {
+  transform: translateY(-5px);
+  box-shadow: 8px 8px 15px #a0a0a0, -8px -8px 15px #e4e4e4;
+}
+
+/* Animation au clic sur les boutons */
+#timer-pause:active,
+#timer-reset:active {
+  transform: translateY(2px);
+  box-shadow: 3px 3px 6px #a0a0a0, -3px -3px 6px #e4e4e4;
+}
+
+#openModal {
+  margin-top: 20px;
+}
+
 /* Modal */
 .modal {
   display: flex;

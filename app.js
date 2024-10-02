@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     const openModalButton = document.getElementById('openModal');
+    let timerInterval;
+    let isPaused = false;
 
     if (openModalButton) {
         const modal = document.getElementById('modal');
@@ -72,15 +74,13 @@ document.addEventListener('DOMContentLoaded', function () {
             let activitiesDetails = [];
 
             for (let i = 0; i <= dayDifference; i++) {
-                // Créer une nouvelle instance de `currentDate` basée sur `startDate`
                 let currentDate = new Date(startDate);
-                currentDate.setDate(currentDate.getDate() + i); // Ajouter `i` jours pour chaque jour de l'activité
+                currentDate.setDate(currentDate.getDate() + i);
 
                 if (i === 0 && endTime < startTime) {
                     const firstDayEndTime = '23:59';
                     const secondDayStartTime = '00:00';
 
-                    // Ajouter un détail d'activité pour le premier jour
                     let firstDayDetail = {
                         color: color,
                         name: activityName,
@@ -95,11 +95,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         return;
                     }
 
-                    // Créer une nouvelle date pour le jour suivant
                     let secondDay = new Date(currentDate);
                     secondDay.setDate(secondDay.getDate() + 1);
 
-                    // Ajouter un détail d'activité pour le jour suivant (si l'activité dépasse minuit)
                     let secondDayDetail = {
                         color: color,
                         name: activityName,
@@ -114,13 +112,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         return;
                     }
                 } else {
-                    // Ajouter un détail d'activité pour un jour unique ou si l'activité reste dans les mêmes heures
                     let newActivityDetail = {
                         color: color,
                         name: activityName,
                         startTime: startTime,
                         endTime: endTime,
-                        date: currentDate.toISOString().split('T')[0] // Assurer que la date est bien au format `YYYY-MM-DD`
+                        date: currentDate.toISOString().split('T')[0]
                     };
 
                     if (!isConflictingActivity(newActivityDetail)) {
@@ -137,7 +134,6 @@ document.addEventListener('DOMContentLoaded', function () {
             modal.style.display = 'none';
             resetModalFields();
         });
-
 
         // Sauvegarder l'activité dans le stockage local
         function saveActivityToStorage(activityName, totalHours, activitiesDetails) {
@@ -164,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Charger et afficher les activités depuis le stockage local
         function loadActivitiesFromStorage(currentDate = new Date()) {
             const activities = JSON.parse(localStorage.getItem('activities')) || [];
-            const dayMapping = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+            const dayMapping = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
             dayMapping.forEach(day => {
                 const dayContainer = document.getElementById(day);
@@ -182,11 +178,16 @@ document.addEventListener('DOMContentLoaded', function () {
                         const activityElement = document.createElement('div');
                         activityElement.classList.add('activity');
                         activityElement.style.backgroundColor = detail.color;
-                        activityElement.setAttribute('data-activity-id', activity.id); // Associer l'ID de l'activité pour la suppression
+                        activityElement.setAttribute('data-activity-id', activity.id);
+
+                        // Ajouter une ligne pour les heures réalisées si existantes
                         activityElement.innerHTML = `
                             <span class="activity-name">${detail.name}</span>
                             <span class="activity-time">${detail.startTime} - ${detail.endTime}</span>
                             <span class="activity-dates">${activityDate.toLocaleDateString()}</span>
+                            <span class="activity-total-hours">Heures prévues : ${activity.totalHours.toFixed(2)}</span>
+                            <span class="activity-hours-realized">Heures réalisées : ${activity.hoursRealized ? activity.hoursRealized.toFixed(2) : '0.00'}</span>
+                            <button class="start-timer-btn">Lancer le timer</button>
                             <button class="delete-activity-btn">Supprimer</button>
                         `;
                         dayContainer.appendChild(activityElement);
@@ -195,6 +196,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             attachDeleteEventListeners();
+            attachStartTimerListeners();
         }
 
         // Ajouter un événement pour chaque bouton de suppression d'activité
@@ -203,20 +205,175 @@ document.addEventListener('DOMContentLoaded', function () {
                 button.addEventListener('click', function (event) {
                     const activityElement = event.target.closest('.activity');
                     const activityId = activityElement.getAttribute('data-activity-id');
-                    const activityDate = activityElement.querySelector('.activity-dates').textContent; // Date de l'activité
-                    const activityTime = activityElement.querySelector('.activity-time').textContent.split(' - '); // Heures de début et de fin
+                    const activityDate = activityElement.querySelector('.activity-dates').textContent;
+                    const activityTime = activityElement.querySelector('.activity-time').textContent.split(' - ');
                     const startTime = activityTime[0];
                     const endTime = activityTime[1];
 
                     if (activityId) {
-                        // Mettre à jour le stockage local pour supprimer le bon détail
                         removeActivityDetailFromStorage(activityId, activityDate, startTime, endTime);
-
-                        // Supprimer l'élément du DOM
                         activityElement.remove();
                     }
                 });
             });
+        }
+
+        // Ajouter un événement pour chaque bouton de démarrage de timer
+        function attachStartTimerListeners() {
+            document.querySelectorAll('.start-timer-btn').forEach(button => {
+                button.addEventListener('click', function (event) {
+                    const activityElement = event.target.closest('.activity');
+                    const activityId = activityElement.getAttribute('data-activity-id');
+                    const activityDate = activityElement.querySelector('.activity-dates').textContent;
+                    const activityTime = activityElement.querySelector('.activity-time').textContent.split(' - ');
+                    const startTime = activityTime[0];
+                    const endTime = activityTime[1];
+
+                    const activityDetail = {
+                        activityId,
+                        date: activityDate,
+                        startTime,
+                        endTime
+                    };
+
+                    // Démarrer le timer pour l'activité spécifique
+                    startTimer(activityDetail);
+                });
+            });
+        }
+
+        // Fonction pour lancer le timer pour une activité
+        function startTimer(activityDetail) {
+            const startTime = Date.now(); // Enregistrer le temps de début en millisecondes
+            const totalDuration = calculateRemainingTime(activityDetail.startTime, activityDetail.endTime); // Durée totale en secondes
+
+            // Sauvegarder l'état du timer dans le stockage local
+            localStorage.setItem('timerState', JSON.stringify({ activityDetail, startTime, totalDuration }));
+
+            timerInterval = setInterval(() => {
+                const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+                const remainingTime = totalDuration - elapsedSeconds;
+
+                // Mettre à jour l'affichage du timer
+                document.getElementById('timer-display').textContent = formatTime(remainingTime);
+
+                // Vérifier si le temps est écoulé
+                if (remainingTime <= 0) {
+                    clearInterval(timerInterval);
+                    addHoursToActivityTable(activityDetail, totalDuration); // Ajouter le temps réalisé à l'activité
+                    alert("Le temps alloué à l'activité est écoulé !");
+                    removeActivityDetailFromStorage(activityDetail.activityId, activityDetail.date, activityDetail.startTime, activityDetail.endTime);
+
+                    // Ajouter le temps réalisé au tableau des activités
+                    updateHoursRealized(activityDetail, totalDuration);
+
+                    // Supprimer l'état du timer une fois terminé
+                    localStorage.removeItem('timerState');
+                }
+            }, 1000);
+        }
+
+        // Fonction pour restaurer et recalculer dynamiquement le temps restant lors du chargement de la page
+        function restoreTimer() {
+            const savedTimerState = JSON.parse(localStorage.getItem('timerState'));
+            if (savedTimerState) {
+                const { activityDetail, startTime, totalDuration } = savedTimerState;
+                const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+                const remainingTime = totalDuration - elapsedSeconds;
+
+                // Si le temps restant est encore positif, démarrer le timer
+                if (remainingTime > 0) {
+                    startRestoredTimer(activityDetail, startTime, totalDuration);
+                } else {
+                    // Si le temps est déjà écoulé, supprimer l'activité
+                    addHoursToActivityTable(activityDetail, totalDuration);
+                    localStorage.removeItem('timerState');
+                    removeActivityDetailFromStorage(activityDetail.activityId, activityDetail.date, activityDetail.startTime, activityDetail.endTime);
+                }
+            }
+        }
+
+        // Fonction pour démarrer le timer restauré à partir des données sauvegardées
+        function startRestoredTimer(activityDetail, startTime, totalDuration) {
+            timerInterval = setInterval(() => {
+                const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+                const remainingTime = totalDuration - elapsedSeconds;
+
+                // Mettre à jour l'affichage du timer
+                document.getElementById('timer-display').textContent = formatTime(remainingTime);
+
+                // Vérifier si le temps est écoulé
+                if (remainingTime <= 0) {
+                    clearInterval(timerInterval);
+                    addHoursToActivityTable(activityDetail, totalDuration); // Ajouter le temps réalisé à l'activité
+                    alert("Le temps alloué à l'activité est écoulé !");
+                    removeActivityDetailFromStorage(activityDetail.activityId, activityDetail.date, activityDetail.startTime, activityDetail.endTime);
+
+                    // Ajouter le temps réalisé au tableau des activités
+                    updateHoursRealized(activityDetail, totalDuration);
+
+                    // Supprimer l'état du timer une fois terminé
+                    localStorage.removeItem('timerState');
+                }
+            }, 1000);
+        }
+
+        // Fonction pour mettre à jour les heures réalisées dans le tableau des activités
+        function updateHoursRealized(activityDetail, totalDuration) {
+            const activities = JSON.parse(localStorage.getItem('activities')) || [];
+            const activity = activities.find(act => act.id === activityDetail.activityId);
+
+            if (activity) {
+                // Convertir le temps total en heures
+                const hoursSpent = Math.abs(totalDuration / 3600); // Convertir les secondes en heures
+
+                // Initialiser ou mettre à jour les heures réalisées
+                if (!activity.hoursRealized) {
+                    activity.hoursRealized = 0;
+                }
+                activity.hoursRealized += parseFloat(hoursSpent.toFixed(2));
+
+                // Mettre à jour le stockage local
+                localStorage.setItem('activities', JSON.stringify(activities));
+                loadActivitiesFromStorage(); // Recharger l'affichage des activités
+            }
+        }
+
+        // Fonction pour calculer la durée totale en secondes entre une heure de début et une heure de fin
+        function calculateRemainingTime(startTime, endTime) {
+            const start = new Date(`1970-01-01T${startTime}`).getTime();
+            const end = new Date(`1970-01-01T${endTime}`).getTime();
+            return Math.floor((end - start) / 1000); // Calcul précis en secondes
+        }
+
+        // Fonction pour formater le temps en `HH:MM:SS`
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const remainingSeconds = seconds % 60;
+
+            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+        }
+
+        // Ajouter le temps réalisé au tableau des activités
+        function addHoursToActivityTable(activityDetail, totalDuration) {
+            const activities = JSON.parse(localStorage.getItem('activities')) || [];
+            const activity = activities.find(act => act.id === activityDetail.activityId);
+
+            if (activity) {
+                const hoursSpent = Math.abs(totalDuration / 3600); // Convertir les secondes en heures
+                activity.totalHours = parseFloat(activity.totalHours.toFixed(2));
+
+                // Ajouter le temps réalisé à `hoursRealized`
+                if (!activity.hoursRealized) {
+                    activity.hoursRealized = 0;
+                }
+                activity.hoursRealized += parseFloat(hoursSpent.toFixed(2));
+
+                // Mettre à jour le stockage local
+                localStorage.setItem('activities', JSON.stringify(activities));
+                loadActivitiesFromStorage();
+            }
         }
 
         // Supprimer un détail spécifique d'une activité du stockage local
@@ -225,14 +382,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
             activities = activities.map(activity => {
                 if (activity.id === activityId) {
-                    // Filtrer les détails pour supprimer seulement la portion spécifique de l'activité
                     activity.activitiesDetails = activity.activitiesDetails.filter(detail =>
                         !(new Date(detail.date).toLocaleDateString() === activityDate &&
                             detail.startTime === startTime &&
                             detail.endTime === endTime)
                     );
 
-                    // Recalculer le total des heures après la suppression
                     if (activity.activitiesDetails.length > 0) {
                         const totalHours = activity.activitiesDetails.reduce((total, detail) => {
                             const hours = (new Date(`1970-01-01T${detail.endTime}`) - new Date(`1970-01-01T${detail.startTime}`)) / (1000 * 3600);
@@ -240,19 +395,18 @@ document.addEventListener('DOMContentLoaded', function () {
                         }, 0);
                         activity.totalHours = parseFloat(totalHours.toFixed(2));
                     } else {
-                        // Si tous les détails sont supprimés, on supprime aussi l'activité
                         activity.totalHours = 0;
                     }
                 }
                 return activity;
-            }).filter(activity => activity.activitiesDetails.length > 0); // Supprimer les activités sans détails
+            }).filter(activity => activity.activitiesDetails.length > 0);
 
-            // Mettre à jour le stockage local
             localStorage.setItem('activities', JSON.stringify(activities));
-
-            // Mettre à jour l'affichage
             loadActivitiesFromStorage();
         }
+
+        // Restaurer un timer s'il était en cours
+        restoreTimer();
 
         // Déterminer si une date est dans la semaine affichée
         function isDateInCurrentView(activityDate, currentDate) {
