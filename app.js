@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const modal = document.getElementById('modal');
         const closeModalSpan = document.querySelector('.close');
         const saveEventButton = document.getElementById('save-event');
+        const pauseButton = document.getElementById('timer-pause');
+        const resetButton = document.getElementById('timer-reset');
 
         // Ouvrir la modale pour créer une nouvelle activité
         openModalButton.addEventListener('click', function () {
@@ -180,7 +182,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         activityElement.style.backgroundColor = detail.color;
                         activityElement.setAttribute('data-activity-id', activity.id);
 
-                        // Ajouter une ligne pour les heures réalisées si existantes
+                        // Ajouter une case à cocher
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.classList.add('activity-checkbox');
+                        checkbox.setAttribute('data-activity-id', activity.id);
+
                         activityElement.innerHTML = `
                             <span class="activity-name">${detail.name}</span>
                             <span class="activity-time">${detail.startTime} - ${detail.endTime}</span>
@@ -190,6 +197,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <button class="start-timer-btn">Lancer le timer</button>
                             <button class="delete-activity-btn">Supprimer</button>
                         `;
+                        activityElement.prepend(checkbox);
                         dayContainer.appendChild(activityElement);
                     }
                 });
@@ -260,12 +268,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Vérifier si le temps est écoulé
                 if (remainingTime <= 0) {
                     clearInterval(timerInterval);
-                    addHoursToActivityTable(activityDetail, totalDuration); // Ajouter le temps réalisé à l'activité
-                    alert("Le temps alloué à l'activité est écoulé !");
-                    removeActivityDetailFromStorage(activityDetail.activityId, activityDetail.date, activityDetail.startTime, activityDetail.endTime);
-
-                    // Ajouter le temps réalisé au tableau des activités
-                    updateHoursRealized(activityDetail, totalDuration);
+                    handleTimerEnd(activityDetail, totalDuration);
 
                     // Supprimer l'état du timer une fois terminé
                     localStorage.removeItem('timerState');
@@ -286,9 +289,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     startRestoredTimer(activityDetail, startTime, totalDuration);
                 } else {
                     // Si le temps est déjà écoulé, supprimer l'activité
-                    addHoursToActivityTable(activityDetail, totalDuration);
+                    handleTimerEnd(activityDetail, totalDuration);
                     localStorage.removeItem('timerState');
-                    removeActivityDetailFromStorage(activityDetail.activityId, activityDetail.date, activityDetail.startTime, activityDetail.endTime);
                 }
             }
         }
@@ -305,38 +307,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Vérifier si le temps est écoulé
                 if (remainingTime <= 0) {
                     clearInterval(timerInterval);
-                    addHoursToActivityTable(activityDetail, totalDuration); // Ajouter le temps réalisé à l'activité
-                    alert("Le temps alloué à l'activité est écoulé !");
-                    removeActivityDetailFromStorage(activityDetail.activityId, activityDetail.date, activityDetail.startTime, activityDetail.endTime);
-
-                    // Ajouter le temps réalisé au tableau des activités
-                    updateHoursRealized(activityDetail, totalDuration);
+                    handleTimerEnd(activityDetail, totalDuration);
 
                     // Supprimer l'état du timer une fois terminé
                     localStorage.removeItem('timerState');
                 }
             }, 1000);
-        }
-
-        // Fonction pour mettre à jour les heures réalisées dans le tableau des activités
-        function updateHoursRealized(activityDetail, totalDuration) {
-            const activities = JSON.parse(localStorage.getItem('activities')) || [];
-            const activity = activities.find(act => act.id === activityDetail.activityId);
-
-            if (activity) {
-                // Convertir le temps total en heures
-                const hoursSpent = Math.abs(totalDuration / 3600); // Convertir les secondes en heures
-
-                // Initialiser ou mettre à jour les heures réalisées
-                if (!activity.hoursRealized) {
-                    activity.hoursRealized = 0;
-                }
-                activity.hoursRealized += parseFloat(hoursSpent.toFixed(2));
-
-                // Mettre à jour le stockage local
-                localStorage.setItem('activities', JSON.stringify(activities));
-                loadActivitiesFromStorage(); // Recharger l'affichage des activités
-            }
         }
 
         // Fonction pour calculer la durée totale en secondes entre une heure de début et une heure de fin
@@ -376,31 +352,61 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
+        // Fonction pour mettre à jour les heures réalisées dans le tableau des activités
+        function updateHoursRealized(activityDetail, totalDuration) {
+            const activities = JSON.parse(localStorage.getItem('activities')) || [];
+            const activity = activities.find(act => act.id === activityDetail.activityId);
+
+            if (activity) {
+                // Convertir le temps total en heures
+                const hoursSpent = Math.abs(totalDuration / 3600); // Convertir les secondes en heures
+
+                // Initialiser ou mettre à jour les heures réalisées
+                if (!activity.hoursRealized) {
+                    activity.hoursRealized = 0;
+                }
+                activity.hoursRealized += parseFloat(hoursSpent.toFixed(2));
+
+                // Mettre à jour le stockage local
+                localStorage.setItem('activities', JSON.stringify(activities));
+                loadActivitiesFromStorage(); // Recharger l'affichage des activités
+            }
+        }
+
+        // Modifier la fonction qui gère la fin du timer pour ne pas supprimer l'activité
+        function handleTimerEnd(activityDetail, totalDuration) {
+            addHoursToActivityTable(activityDetail, totalDuration);
+            updateHoursRealized(activityDetail, totalDuration);
+            alert("Le temps alloué à l'activité est écoulé !");
+            // Ne pas supprimer l'activité, juste mettre à jour les heures réalisées
+        }
+
         // Supprimer un détail spécifique d'une activité du stockage local
         function removeActivityDetailFromStorage(activityId, activityDate, startTime, endTime) {
             let activities = JSON.parse(localStorage.getItem('activities')) || [];
 
             activities = activities.map(activity => {
                 if (activity.id === activityId) {
+                    // Filtrer les détails pour ne pas afficher l'activité supprimée dans le calendrier
                     activity.activitiesDetails = activity.activitiesDetails.filter(detail =>
                         !(new Date(detail.date).toLocaleDateString() === activityDate &&
                             detail.startTime === startTime &&
                             detail.endTime === endTime)
                     );
 
+                    // Calculer à nouveau les heures totales si nécessaire
                     if (activity.activitiesDetails.length > 0) {
                         const totalHours = activity.activitiesDetails.reduce((total, detail) => {
                             const hours = (new Date(`1970-01-01T${detail.endTime}`) - new Date(`1970-01-01T${detail.startTime}`)) / (1000 * 3600);
                             return total + hours;
                         }, 0);
                         activity.totalHours = parseFloat(totalHours.toFixed(2));
-                    } else {
-                        activity.totalHours = 0;
                     }
                 }
                 return activity;
-            }).filter(activity => activity.activitiesDetails.length > 0);
+            });
 
+            // Ne pas filtrer les activités; conserver toutes les activités même celles sans détails visibles
             localStorage.setItem('activities', JSON.stringify(activities));
             loadActivitiesFromStorage();
         }
@@ -471,6 +477,51 @@ document.addEventListener('DOMContentLoaded', function () {
         displayWeekNumber(currentViewDate);
         updateCalendarDates(currentViewDate);
         loadActivitiesFromStorage(currentViewDate);
+
+        pauseButton.addEventListener('click', function () {
+            togglePause();
+        });
+
+        resetButton.addEventListener('click', function () {
+            resetTimer();
+        });
+
+        // Fonction pour basculer la pause du timer
+        function togglePause() {
+            isPaused = !isPaused; // basculer l'état de pause
+            if (isPaused) {
+                clearInterval(timerInterval); // Arrêter le timer
+            } else {
+                // Assurez-vous que `startTimer` peut reprendre correctement le timer
+                const savedTimerState = JSON.parse(localStorage.getItem('timerState'));
+                if (savedTimerState) {
+                    startTimer(savedTimerState.activityDetail);
+                }
+            }
+        }
+
+        // Fonction pour réinitialiser le timer
+        function resetTimer() {
+            clearInterval(timerInterval); // Arrêter le timer
+            localStorage.removeItem('timerState'); // Supprimer l'état du timer du stockage local
+            document.getElementById('timer-display').textContent = '00:00:00'; // Réinitialiser l'affichage du timer
+            isPaused = false; // Réinitialiser l'état de pause
+        }
+
+        document.getElementById('reset-table').addEventListener('click', function () {
+            const checkboxes = document.querySelectorAll('.activity-checkbox:checked');
+            checkboxes.forEach(checkbox => {
+                const activityId = checkbox.getAttribute('data-activity-id');
+                removeActivityFromStorage(activityId);
+                checkbox.closest('.activity').remove();
+            });
+        });
+
+        function removeActivityFromStorage(activityId) {
+            let activities = JSON.parse(localStorage.getItem('activities'));
+            activities = activities.filter(activity => activity.id !== activityId);
+            localStorage.setItem('activities', JSON.stringify(activities));
+        }
 
     } else {
         console.warn('Le bouton pour ouvrir la modale n\'existe pas sur cette page.');
