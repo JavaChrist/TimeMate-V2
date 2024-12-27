@@ -124,6 +124,18 @@ header {
   position: relative;
 }
 
+.calendar-day .day-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+}
+
+.calendar-day .date-display {
+  font-size: 14px;
+  color: white;
+}
+
+
 /* Activité */
 .calendar-day-body .activity {
   background-color: #e3f2fd;
@@ -511,4 +523,19 @@ td {
 th {
   background-color: #f2f2f2;
   font-weight: bold;
+}
+.delete-activity-btn {
+  color: white;
+  background-color: #007bff;
+  padding: 5px;
+  border-radius: 50%;
+  font-size: 14px;
+  line-height: 1;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  margin-left: 5px;
+}
+.delete-activity-btn:hover {
+  background-color: #0056b3;
 }

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,7 +8,6 @@
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 </head>
-
 <body>
   <header>
     <h1>TimeMate - Calendrier</h1>
@@ -26,16 +24,36 @@
 
   <div class="calendar-container">
     <div class="calendar-header">
-      <div class="calendar-day monday">Lundi</div>
-      <div class="calendar-day tuesday">Mardi</div>
-      <div class="calendar-day wednesday">Mercredi</div>
-      <div class="calendar-day thursday">Jeudi</div>
-      <div class="calendar-day friday">Vendredi</div>
-      <div class="calendar-day saturday">Samedi</div>
-      <div class="calendar-day sunday">Dimanche</div>
+      <div class="calendar-day monday">
+        <span class="day-title">Lundi</span>
+        
+      </div>
+      <div class="calendar-day tuesday">
+        <span class="day-title">Mardi</span>
+        <span class="date-display"></span>
+      </div>
+      <div class="calendar-day wednesday">
+        <span class="day-title">Mercredi</span>
+        <span class="date-display"></span>
+      </div>
+      <div class="calendar-day thursday">
+        <span class="day-title">Jeudi</span>
+        <span class="date-display"></span>
+      </div>
+      <div class="calendar-day friday">
+        <span class="day-title">Vendredi</span>
+        <span class="date-display"></span>
+      </div>
+      <div class="calendar-day saturday">
+        <span class="day-title">Samedi</span>
+        <span class="date-display"></span>
+      </div>
+      <div class="calendar-day sunday">
+        <span class="day-title">Dimanche</span>
+        <span class="date-display"></span>
+      </div>
     </div>
     <div class="calendar-body">
-
       <div class="calendar-day-body" id="monday"></div>
       <div class="calendar-day-body" id="tuesday"></div>
       <div class="calendar-day-body" id="wednesday"></div>
@@ -48,19 +66,13 @@
 
   <button id="openModal">Ajouter une activité</button>
 
-  <div id="timer-container">
-    <div id="timer-display">00:00:00</div>
-    <button id="timer-pause">Pause</button>
-    <button id="timer-reset">Reset</button>
-  </div>
-
-
   <div id="modal" class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
       <h2>Nouvelle activité</h2>
       <label for="activity-name">Nom de l'activité :</label>
       <input type="text" id="activity-name" placeholder="Entrez un nom" />
+
       <div class="date-time-container">
         <div class="time-container">
           <label for="activity-time-start">Heure de début :</label>
@@ -75,6 +87,7 @@
           <input type="date" id="activity-end-date" placeholder="jj/mm/aaaa" onkeydown="return false;" />
         </div>
       </div>
+
       <label for="activity-color">Couleur :</label>
       <select id="activity-color">
         <option value="red">&#9632; Rouge</option>
@@ -93,15 +106,15 @@
         <option value="lime">&#9632; Citron vert</option>
         <option value="magenta">&#9632; Magenta</option>
       </select>
+
+      <label for="activity-realized-time">Temps passé (en heures) :</label>
+      <input type="number" id="activity-realized-time" min="0" step="0.01" placeholder="0.00" />
+
       <button id="save-event">Enregistrer</button>
     </div>
   </div>
 
-  <!-- Commentez ou supprimez le bouton si vous ne voulez plus de fonctionnalité de purge -->
-  <!-- <button id="purge-button">Purger toutes les activités</button> -->
   <button id="reset-table">Réinitialiser le tableau</button>
   <script src="app.js"></script>
-
 </body>
-
 </html>
